@@ -1,4 +1,4 @@
-# ESP-AudioDSP
+# ESP-AudioDSP (release coming soon)
 
 > **A universal, hardware-abstracted DSP library for ESP32.**  
 > Build real-time audio filters, dynamics processors, and creative effects with a PCM5102 DAC and PCM180x ADC — in a few lines of code.
