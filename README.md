@@ -17,7 +17,7 @@ Building a real-time audio processor on ESP32 normally means fighting DMA buffer
 
 **ESP-AudioDSP removes all of that.**
 
-It wraps Espressif's [`esp-dsp`](https://github.com/espressif/esp-dsp) library behind a clean, descriptive C++ API, adds a software fallback for non-ESP32 boards, manages the ping-pong DMA buffer lifecycle for you, and exposes every DSP primitive as a human-readable function call.
+It wraps Espressif's [`esp-dsp`](https://github.com/espressif/esp-dsp) library behind a clean, descriptive C++ API, manages the ping-pong DMA buffer lifecycle for you, and exposes every DSP primitive as a human-readable function call.
 
 ```cpp
 #include "ESP_AudioDSP.h"
