@@ -15,6 +15,8 @@
 
 Building a real-time audio processor on ESP32 normally means fighting DMA buffers, understanding SIMD intrinsics, hand-writing biquad difference equations, and converting between integer and floating-point domains — before you've even thought about your actual effect.
 
+**note** this is a vibecoded library, a personal project - but it works! But there are most likely still tons of bugs that remain unresolved, if so let me know what you run into and i will try my best fo fix asap
+
 **ESP-AudioDSP removes all of that.**
 
 It wraps Espressif's [`esp-dsp`](https://github.com/espressif/esp-dsp) library behind a clean, descriptive C++ API, manages the ping-pong DMA buffer lifecycle for you, and exposes every DSP primitive as a human-readable function call.
