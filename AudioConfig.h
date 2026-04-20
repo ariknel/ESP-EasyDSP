@@ -1,76 +1,35 @@
 #pragma once
 
 // =============================================================================
-// AudioConfig.h — ESP-AudioDSP Hardware Configuration
-// =============================================================================
-// Uncomment ONE preset below, or define pins manually underneath.
-// This file is the only place you need to touch for hardware setup.
+// AudioConfig.h  –  Hardware pin assignments and compile-time constants
+// Edit this file to match your wiring. Everything else is automatic.
 // =============================================================================
 
-// --- PRESETS — uncomment one ---
+// --- PCM5102A  (I2S output DAC) ---
+#define PIN_I2S_OUT_BCK   26   // Bit clock
+#define PIN_I2S_OUT_WS    25   // Word select / LRCK
+#define PIN_I2S_OUT_DATA  22   // Serial data
 
-// #define PRESET_PCM5102_PCM1808       // PCM5102A DAC + PCM1808 ADC (recommended)
-// #define PRESET_PCM5102_INTERNAL_ADC  // PCM5102A DAC + ESP32 internal ADC
-// #define PRESET_INTERNAL_DAC_MIC      // ESP32 built-in DAC + I2S MEMS mic
+// --- PCM1808 / line-in ADC  (I2S input) ---
+// If you are using the ESP32 internal ADC instead, leave these defined
+// but set INPUT_SOURCE to INPUT_INTERNAL_ADC in your sketch.
+#define PIN_I2S_IN_BCK    32
+#define PIN_I2S_IN_WS     33
+#define PIN_I2S_IN_DATA   34
 
-// --- Apply preset pin defaults ---
+// --- Internal ADC pin (used when INPUT_INTERNAL_ADC is selected) ---
+#define PIN_ADC_IN        36   // GPIO36 = VP, ADC1_CH0  (input-only, no pull)
 
-#if defined(PRESET_PCM5102_PCM1808)
-  #define AUDIO_OUTPUT  OUTPUT_PCM5102
-  #define AUDIO_INPUT   INPUT_LINE_IN
-  #define I2S_OUT_BCLK  25
-  #define I2S_OUT_LRCK  26
-  #define I2S_OUT_DATA  22
-  #define I2S_IN_BCLK   32
-  #define I2S_IN_LRCK   33
-  #define I2S_IN_DATA   34
+// --- DMA buffer size in samples (per channel) ---
+// 256 @ 44100 Hz  →  ~5.8 ms latency  (good starting point)
+// Increase to 512 if you hear glitches; decrease to 128 for lower latency.
+#define DMA_BUF_LEN    256
+#define DMA_BUF_COUNT  4      // number of DMA descriptors in the ring
 
-#elif defined(PRESET_PCM5102_INTERNAL_ADC)
-  #define AUDIO_OUTPUT  OUTPUT_PCM5102
-  #define AUDIO_INPUT   INPUT_INTERNAL_ADC
-  #define I2S_OUT_BCLK  25
-  #define I2S_OUT_LRCK  26
-  #define I2S_OUT_DATA  22
-  #define ADC_PIN       36  // VP pin
+// --- FreeRTOS task settings ---
+#define DSP_TASK_CORE      1   // pin DSP to Core 1, leaving Core 0 for Arduino loop
+#define DSP_TASK_PRIORITY  22  // high priority; lower than WiFi (23) if used
+#define DSP_TASK_STACK     4096
 
-#elif defined(PRESET_INTERNAL_DAC_MIC)
-  #define AUDIO_OUTPUT  OUTPUT_INTERNAL_DAC
-  #define AUDIO_INPUT   INPUT_I2S_MIC
-  #define I2S_IN_BCLK   32
-  #define I2S_IN_LRCK   33
-  #define I2S_IN_DATA   34
-
-#else
-  // --- Manual pin configuration ---
-  // No preset selected — define your own pins here:
-  #define I2S_OUT_BCLK  25
-  #define I2S_OUT_LRCK  26
-  #define I2S_OUT_DATA  22
-  #define I2S_IN_BCLK   32
-  #define I2S_IN_LRCK   33
-  #define I2S_IN_DATA   34
-#endif
-
-// --- Optional: PSRAM-backed delay ---
-// Define this if your ESP32 module has PSRAM (e.g. ESP32-WROVER, ESP32-S3)
-// Without this, delay is limited to ~90ms at 44100Hz
-// #define BOARD_HAS_PSRAM
-
-// --- Optional: print timing to Serial ---
-// #define AUDIO_DSP_BENCHMARK
-
-// --- Optional: manual process() instead of background task ---
-// #define AUDIO_DSP_MANUAL_PROCESS
-
-// --- Buffer defaults (override if needed) ---
-#ifndef AUDIO_BUFFER_SIZE
-  #define AUDIO_BUFFER_SIZE 256
-#endif
-
-#ifndef AUDIO_TASK_CORE
-  #define AUDIO_TASK_CORE 1
-#endif
-
-#ifndef AUDIO_TASK_PRIORITY
-  #define AUDIO_TASK_PRIORITY 22
-#endif
+// --- Maximum biquad stages in the filter chain ---
+#define MAX_BIQUAD_STAGES  8
